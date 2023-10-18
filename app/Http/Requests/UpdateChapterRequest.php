@@ -34,7 +34,10 @@ class UpdateChapterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['nullable'],
+            'order_num' => ['nullable', 'numeric'],
+            'content' => ['nullable'],
+            'is_published' => ['nullable'],
         ];
     }
 }

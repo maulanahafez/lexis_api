@@ -34,7 +34,9 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'chapter_id' => ['required', 'numeric'],
+            'user_id' => ['required', 'numeric'],
+            'content' => ['nullable'],
         ];
     }
 }

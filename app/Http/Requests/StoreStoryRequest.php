@@ -34,7 +34,7 @@ class StoreStoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required'],
+            'user_id' => ['required', 'numeric'],
             'title' => ['required', Rule::unique('stories', 'title')],
             'genre' => ['required'],
             'description' => ['nullable'],

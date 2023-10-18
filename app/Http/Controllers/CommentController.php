@@ -8,42 +8,56 @@ use App\Http\Requests\UpdateCommentRequest;
 
 class CommentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreCommentRequest $request)
     {
-        //
+        try {
+            $data = Comment::create($request->all());
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateCommentRequest $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
+    {
+        $data = Comment::where('id', $id)->first();
+        if ($data) {
+            try {
+                $data->delete();
+                return response()->json([
+                    'success' => true,
+                ]);
+            } catch (\Throwable $th) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $th->getMessage(),
+                ], 500);
+            }
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Not Found'
+        ], 404);
+    }
+
+    public function index()
+    {
+        //
+    }
+
+    public function show($id)
     {
         //
     }

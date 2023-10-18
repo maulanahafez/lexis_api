@@ -8,18 +8,12 @@ use App\Http\Requests\UpdateStoryRequest;
 
 class StoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $data = Story::where('is_published', true)->latest('updated_at')->get();
         return response()->json($data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreStoryRequest $request)
     {
         try {
@@ -36,9 +30,6 @@ class StoryController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         $data = Story::where('id', $id)->first();
@@ -54,9 +45,6 @@ class StoryController extends Controller
         ], 404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateStoryRequest $request, $id)
     {
         $data = Story::where('id', $id)->first();
@@ -80,9 +68,6 @@ class StoryController extends Controller
         ], 404);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         $data = Story::where('id', $id)->first();

@@ -34,7 +34,7 @@ class UpdateStoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', Rule::unique('stories', 'title')->ignore($this->id)],
+            'title' => ['nullable', Rule::unique('stories', 'title')->ignore($this->id)],
             'genre' => ['nullable'],
             'description' => ['nullable'],
             'cover_path' => ['nullable'],
