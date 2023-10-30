@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FollowController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\StoryController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,9 +24,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::controller(UserController::class)->group(function () {
+    Route::post('user', 'index');
+    Route::get('user/username_unique', 'is_username_unique');
+
+    // User Stories
+    Route::get('user/{id}/stories', 'getUserStories');
+});
+
 Route::controller(StoryController::class)->group(function () {
-    Route::get('stories/', 'index');
-    Route::post('stories/', 'store');
+    // Readers
+    Route::get('stories', 'index');
+
+    // Authors
+    Route::post('stories', 'store');
     Route::get('stories/{id}', 'show');
     Route::patch('stories/{id}', 'update');
     Route::delete('stories/{id}', 'destroy');
