@@ -57,7 +57,7 @@ class UserFactory extends Factory
         for ($i = 0; $i < $numGenres; $i++) {
             $randomGenres[] = $bookGenres[$i];
         }
-        $genresString = implode('\n', $randomGenres);
+        $genresString = implode('~', $randomGenres);
         return $genresString;
     }
 }

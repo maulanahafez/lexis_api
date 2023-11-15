@@ -14,7 +14,7 @@ class UserController extends Controller
             $user = User::updateOrCreate([
                 'uid' => $req->uid,
                 'email' => $req->email,
-                'name' => $req->name,
+                // 'name' => $req->name,
             ], $req->all());
             return response()->json([
                 'success' => true,
