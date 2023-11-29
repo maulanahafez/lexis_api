@@ -34,7 +34,7 @@ class StoreFollowRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'follower_id' => ['required'],
         ];
     }
 }

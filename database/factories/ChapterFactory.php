@@ -20,7 +20,7 @@ class ChapterFactory extends Factory
             // 'story_id' => fake()->name(),
             'title' => fake()->sentence(),
             'order_num' => fake()->randomNumber(2),
-            'content' => fake()->randomHtml(10),
+            'content' => fake()->paragraphs(10, true),
             'is_published' => fake()->boolean(),
         ];
     }

@@ -16,9 +16,9 @@ class Chapter extends Model
         return $this->belongsTo(Story::class, 'story_id');
     }
 
-    public function like()
+    public function likes()
     {
-        return $this->hasOne(Like::class, 'chapter_id');
+        return $this->hasMany(Like::class, 'chapter_id');
     }
 
     public function comments()

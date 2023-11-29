@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('uid')->unique(); // Firebase UID
             $table->string('username')->unique()->nullable();
             $table->string('email')->unique();
+            $table->string('photoUrl')->nullable();
             $table->string('name')->nullable();
             $table->text('bio')->nullable();
             $table->string('story_preferences')->nullable();

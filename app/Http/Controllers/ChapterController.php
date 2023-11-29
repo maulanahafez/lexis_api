@@ -7,6 +7,7 @@ use App\Http\Requests\StoreChapterRequest;
 use App\Http\Requests\UpdateChapterRequest;
 use App\Models\Comment;
 use App\Models\Like;
+use Illuminate\Http\Request;
 
 class ChapterController extends Controller
 {
@@ -19,10 +20,18 @@ class ChapterController extends Controller
         return response()->json($data);
     }
 
-    public function show($id)
+    public function show($id, Request $req)
     {
-        $data = Chapter::where(['id' => $id, 'is_published' => true])->first();
-        if ($data) {
+        $data = [];
+        $data['chapter'] = Chapter::where([
+            'id' => $id,
+            // 'is_published' => true
+        ])->first();
+        if ($data['chapter']) {
+            $data['likes'] = Like::select(['id', 'chapter_id'])->where('chapter_id', $id)->count();
+            if ($req->user_id) {
+                $data['isLiked'] = Like::select(['id', 'chapter_id', 'user_id'])->where(['chapter_id' => $id, 'user_id' => $req->user_id])->first() ? true : false;
+            }
             return response()->json([
                 'success' => true,
                 'data' => $data
@@ -110,9 +119,9 @@ class ChapterController extends Controller
     /**
      * Likes
      */
-    public function getLikes($id)
+    public function getLikes($id, Request $req)
     {
-        $data = Like::where('chapter_id', $id)->count();
+        $data = Like::select(['id', 'chapter_id'])->where('chapter_id', $id)->count();
         return response()->json($data);
     }
 }

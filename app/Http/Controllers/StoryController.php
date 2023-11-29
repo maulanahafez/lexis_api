@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Story;
 use App\Http\Requests\StoreStoryRequest;
 use App\Http\Requests\UpdateStoryRequest;
+use Illuminate\Http\Request;
+use Storage;
 
 class StoryController extends Controller
 {
@@ -17,12 +19,23 @@ class StoryController extends Controller
     public function store(StoreStoryRequest $request)
     {
         try {
-            $data = Story::create($request->all());
+            if ($request->hasFile('cover')) {
+                $cover = $request->file('cover');
+                $originalFileName = $cover->getClientOriginalName();
+                $file_name = time() . '_' . str_replace(' ', '_', $originalFileName);
+                $cover_path = Storage::putFileAs('public/img/story', $cover, $file_name);
+            } else {
+                $cover_path = null;
+            }
+            $data = $request->except(['cover']);
+            $data['cover_path'] = $cover_path;
+            $data = Story::create($data);
             return response()->json([
                 'success' => true,
                 'data' => $data
             ]);
         } catch (\Throwable $th) {
+            Storage::delete($cover_path);
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -32,7 +45,13 @@ class StoryController extends Controller
 
     public function show($id)
     {
-        $data = Story::where('id', $id)->first();
+        $data = Story::with(['chapters:id,story_id,title,order_num,is_published', 'chapters.likes', 'user:id,username'])->where('id', $id)->first();
+        $likes = 0;
+        foreach ($data->chapters as $chapter) {
+            $likes += $chapter->likes->count();
+            unset($chapter->likes);
+        }
+        $data['likes'] = $likes;
         if ($data) {
             return response()->json([
                 'success' => true,
@@ -45,12 +64,20 @@ class StoryController extends Controller
         ], 404);
     }
 
-    public function update(UpdateStoryRequest $request, $id)
+    // public function update($id, UpdateStoryRequest $request)
+    public function update($id, Request $request)
     {
         $data = Story::where('id', $id)->first();
+        // $req = json_encode($request->all());
+        $datas = [
+            'req' => $request->all(),
+            'data' => $data
+        ];
+        // return response()->json($request->all());
+        return response()->json($datas);
         if ($data) {
             try {
-                $data->update($request->all());
+                $data->update($request->except(['cover']));
                 return response()->json([
                     'success' => true,
                     'data' => $data

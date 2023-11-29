@@ -8,43 +8,22 @@ use App\Http\Requests\UpdateFollowRequest;
 
 class FollowController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function follow($id, StoreFollowRequest $request)
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreFollowRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateFollowRequest $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        //
+        $follower_id = $request->follower_id;
+        $data = Follow::select('id')->where([
+            ['follower_id', '=', $follower_id],
+            ['user_id', '=', $id]
+        ])->first();
+        if ($data) {
+            $data->delete();
+            return response()->json(['follow' => false]);
+        } else {
+            $data = Follow::create([
+                'user_id' => $id,
+                'follower_id' => $follower_id,
+            ]);
+            return response()->json(['follow' => true]);
+        }
     }
 }

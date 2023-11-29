@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->count(10)->has(
-            Story::factory(2)->has(
+            Story::factory(3)->has(
                 Chapter::factory(2)
             )
         )->create();
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         $users = User::all();
         foreach ($users as $item) {
-            Story::factory(2)->state(['user_id' => $item->id])->has(Chapter::factory(2))->create();
+            Story::factory(3)->state(['user_id' => $item->id])->has(Chapter::factory(2))->create();
         }
 
         $chapters = Chapter::all();
@@ -83,6 +83,26 @@ class DatabaseSeeder extends Seeder
                 'uid' => 'rPVuY2BVcVNmwH8SPMuVGvtaqDj1',
                 'name' => 'Rakan Lhotlan',
                 'email' => 'rakanmainnn@gmail.com',
+            ],
+            [
+                'uid' => 'm2rdRwkRMZS1hHh6IKe3dnaZARZ2',
+                'name' => 'AHITA BISMA ADLULA 1',
+                'email' => 'ahita.adlula@mhs.unsoed.ac.id',
+            ],
+            [
+                'uid' => 'Qi111aoTnKZXaRfJRDMgWPSGs9q1',
+                'name' => 'Ahita Bisma A',
+                'email' => 'ahitabisma21@gmail.com',
+            ],
+            [
+                'uid' => 'QpYu5YYuEqhgAFpvw1cRyd7I1Fk1',
+                'name' => 'Nihayatur Rahmah',
+                'email' => 'afspraakhyrm@gmail.com',
+            ],
+            [
+                'uid' => 'AMegI18mvDXpmfliVtIjzDnNxdN2',
+                'name' => 'Usriyatul Khamimah',
+                'email' => 'khamimahusriyatul@gmail.com',
             ],
         ];
 

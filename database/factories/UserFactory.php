@@ -21,6 +21,7 @@ class UserFactory extends Factory
             'uid' => fake()->uuid(),
             'username' => fake()->userName(),
             'email' => fake()->email(),
+            'photoUrl' => fake()->imageUrl(150, 150),
             'name' => fake()->name(),
             'bio' => fake()->paragraph(),
             'story_preferences' => $this->story_preferences(),

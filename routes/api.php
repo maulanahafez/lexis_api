@@ -25,11 +25,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::controller(UserController::class)->group(function () {
+    // Profile
     Route::post('user', 'index');
     Route::get('user/username_unique', 'is_username_unique');
 
+    // Target User
+    Route::get('user/{id}', 'user');
+
     // User Stories
     Route::get('user/{id}/stories', 'getUserStories');
+
+    // User Likes
+    Route::get('user/{id}/likes', 'getChapterLikes');
+
+    // Stats
+    Route::get('user/{id}/stats', 'stats');
+    Route::get('user/{id}/followers', 'followers');
+    Route::get('user/{id}/following', 'following');
 });
 
 Route::controller(StoryController::class)->group(function () {
@@ -71,10 +83,10 @@ Route::controller(LikeController::class)->group(function () {
     Route::delete('likes/{id}', 'destroy');
 });
 
-Route::controller(FollowController::class)->prefix('follow')->group(function () {
-    Route::get('/', 'index');
-    Route::post('/', 'store');
-    Route::get('/{id}', 'show');
-    Route::patch('/{id}', 'update');
-    Route::delete('/{id}', 'destroy');
+Route::controller(FollowController::class)->group(function () {
+    Route::post('follow/{id}', 'follow');
+});
+
+Route::controller(LikeController::class)->group(function () {
+    Route::post('like/{id}', 'like');
 });
