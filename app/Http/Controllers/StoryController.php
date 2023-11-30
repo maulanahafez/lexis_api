@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Story;
 use App\Http\Requests\StoreStoryRequest;
 use App\Http\Requests\UpdateStoryRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Storage;
 
@@ -13,6 +14,63 @@ class StoryController extends Controller
     public function index()
     {
         $data = Story::where('is_published', true)->latest('updated_at')->get();
+        return response()->json($data);
+    }
+
+    public function recommendation(Request $req)
+    {
+        $data = [];
+        $preferences = $req->preferences;
+        if ($preferences) {
+            foreach ($preferences as $p) {
+                $stories = Story::select([
+                    'id',
+                    'title',
+                    'genre',
+                    'cover_path',
+                    'created_at'
+                ])->where([['genre', '=', $p]])->orderBy('created_at', 'desc')->limit(8)->get();
+
+                foreach ($stories as $key => $story) {
+                    if ($story->cover_path !== null) {
+                        $stories[$key]->cover_path = str_starts_with($story->cover_path, 'h')
+                            ? $story->cover_path
+                            : 'http://localhost/lexis_api/public' . Storage::url($story->cover_path);
+                    } else {
+                        $stories[$key]->cover_path = '';
+                    }
+                }
+                $data[$p] = $stories;
+            }
+        } else {
+            $data['You Might Like'] = Story::select([
+                'id',
+                'title',
+                'genre',
+                'cover_path',
+                'created_at'
+            ])->orderBy('created_at', 'desc')->limit(8)->get();
+            foreach ($data['You Might Like'] as $key => $story) {
+                if ($story->cover_path !== null) {
+                    $data['You Might Like'][$key]->cover_path = str_starts_with($story->cover_path, 'h')
+                        ? $story->cover_path
+                        : 'http://localhost/lexis_api/public' . Storage::url($story->cover_path);
+                } else {
+                    $data['You Might Like'][$key]->cover_path = '';
+                }
+            }
+        }
+        $data['user'] = User::select(['id as user_id', 'name', 'photoUrl', 'created_at'])->orderBy('created_at', 'asc')->has('stories', '>', 0)->limit(8)->get();
+        return response()->json($data);
+    }
+
+    public function search(Request $req)
+    {
+        if (!$req->s) return response()->json([]);
+        $s = $req->s;
+        $data = [];
+        $data['stories'] = Story::select(['id', 'title', 'cover_path', 'created_at'])->orderBy('created_at', 'desc')->where([['title', 'like', "%$s%"]])->limit(8)->get();
+        $data['authors'] = User::select(['id', 'name', 'photoUrl', 'created_at'])->orderBy('created_at', 'asc')->where([['name', 'like', "%$s%"]])->limit(8)->get();
         return response()->json($data);
     }
 

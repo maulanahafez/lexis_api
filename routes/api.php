@@ -47,6 +47,8 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(StoryController::class)->group(function () {
     // Readers
     Route::get('stories', 'index');
+    Route::post('stories/recommendation', 'recommendation');
+    Route::get('stories/search', 'search');
 
     // Authors
     Route::post('stories', 'store');
